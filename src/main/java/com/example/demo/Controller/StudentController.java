@@ -1,5 +1,7 @@
 package com.example.demo.Controller;
 
+import com.example.demo.dto.createStudentReqDTO;
+import com.example.demo.dto.createStudentRespDTO;
 import com.example.demo.entity.Student;
 import com.example.demo.services.StudentService;
 import org.springframework.http.HttpStatus;
@@ -19,12 +21,10 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        System.out.println("Inside Student Controller");
-        System.out.println(student.getName());
+    public ResponseEntity<createStudentRespDTO> createStudent(@RequestBody createStudentReqDTO studentrequestdto) {
 
-        Student createdStudent = studentService.createStudent(student);
-        System.out.println("Exiting Student Controller");
+        createStudentRespDTO createdStudent = studentService.createStudent(studentrequestdto);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdStudent);
