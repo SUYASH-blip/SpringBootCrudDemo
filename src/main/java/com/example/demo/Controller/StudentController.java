@@ -1,7 +1,8 @@
 package com.example.demo.Controller;
 
-import com.example.demo.dto.createStudentReqDTO;
-import com.example.demo.dto.createStudentRespDTO;
+import com.example.demo.dto.CreateStudentReqDTO;
+import com.example.demo.dto.CreateStudentRespDTO;
+import com.example.demo.dto.UpdateStudentRespDTO;
 import com.example.demo.entity.Student;
 import com.example.demo.services.StudentService;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,9 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<createStudentRespDTO> createStudent(@RequestBody createStudentReqDTO studentrequestdto) {
+    public ResponseEntity<CreateStudentRespDTO> createStudent(@RequestBody CreateStudentReqDTO studentrequestdto) {
 
-        createStudentRespDTO createdStudent = studentService.createStudent(studentrequestdto);
+        CreateStudentRespDTO createdStudent = studentService.createStudent(studentrequestdto);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -42,8 +43,8 @@ public class StudentController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<Student>> getallStudents(){
-        List<Student> studentList = studentService.getallStudents();
+    public ResponseEntity<List<CreateStudentRespDTO>> getallStudents(){
+        List<CreateStudentRespDTO> studentList = studentService.getallStudents();
 
         if(studentList.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -53,8 +54,8 @@ public class StudentController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<Student> updateStudent(@RequestParam Long id,@RequestBody Student studentreq){
-        Student updatedStudent = studentService.updatestudent(id,studentreq);
+    public ResponseEntity<UpdateStudentRespDTO> updateStudent(@RequestParam Long id, @RequestBody UpdateStudentRespDTO studentreq){
+        UpdateStudentRespDTO updatedStudent = studentService.updatestudent(id,studentreq);
 
         if(updatedStudent == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

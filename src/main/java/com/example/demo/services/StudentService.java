@@ -1,7 +1,9 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.createStudentReqDTO;
-import com.example.demo.dto.createStudentRespDTO;
+import com.example.demo.dto.CreateStudentReqDTO;
+import com.example.demo.dto.CreateStudentRespDTO;
+import com.example.demo.dto.UpdateStudentReqDTO;
+import com.example.demo.dto.UpdateStudentRespDTO;
 import com.example.demo.entity.Student;
 import com.example.demo.repository.Studentrepository;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ public class StudentService {
 
 
 
-    public createStudentRespDTO createStudent(createStudentReqDTO studentreqDto){
+    public CreateStudentRespDTO createStudent(CreateStudentReqDTO studentreqDto){
 
 
         Student student = mapToEntity(studentreqDto);
@@ -40,26 +42,27 @@ public class StudentService {
 
     }
 
-    public List<Student> getallStudents(){
+    public List<CreateStudentRespDTO> getallStudents(){
 
         List<Student> studentList2 = studentrepository.findByDeletedIsFalse();
 
-        if(studentList2.isEmpty()) return null;
-        return studentList2;
-
+        return studentList2.stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
-    public Student updatestudent(Long id,Student studentReq){
+
+    public Student updatestudent(Long id, UpdateStudentReqDTO studentReq){
         Optional<Student> existingstudent = studentrepository.findById(id);
 
-        if(!existingstudent.isPresent()) return null;
+        if(existingstudent.isEmpty()) return null;
 
         Student studentTosave = existingstudent.get();
         studentTosave.setName(studentReq.getName());
         studentTosave.setAge(studentReq.getAge());
         studentTosave.setDepartment(studentReq.getDepartment());
         studentTosave.setRoll_no(studentReq.getRoll_no());
-        studentTosave.setEmail(studentReq.getEmail());
+
 
         Student Finalstudent = studentrepository.save(studentTosave);
 
@@ -67,7 +70,7 @@ public class StudentService {
 
     }
 
-    private Student mapToEntity(createStudentReqDTO studentrequestdto){
+    private Student mapToEntity(CreateStudentReqDTO studentrequestdto){
         Student student = new Student();
         student.setName(studentrequestdto.getName());
         student.setAge(studentrequestdto.getAge());
@@ -77,8 +80,8 @@ public class StudentService {
 
         return student;
     }
-    private createStudentRespDTO mapToDto(Student student){
-        createStudentRespDTO studentRespDTO = new createStudentRespDTO();
+    private CreateStudentRespDTO mapToDto(Student student){
+        CreateStudentRespDTO studentRespDTO = new CreateStudentRespDTO();
         studentRespDTO.setName(student.getName());
         studentRespDTO.setAge(student.getAge());
         studentRespDTO.setDepartment(student.getDepartment());
@@ -89,6 +92,19 @@ public class StudentService {
         studentRespDTO.setMessage("Student record saved successfully");
 
         return studentRespDTO;
+
+    }
+    private UpdateStudentRespDTO mapToUpdateDto(Student student){
+        UpdateStudentRespDTO updateStudentRespDTO = new UpdateStudentRespDTO();
+        updateStudentRespDTO.setName(student.getName());
+        updateStudentRespDTO.setAge(student.getAge());
+        updateStudentRespDTO.setDepartment(student.getDepartment());
+        updateStudentRespDTO.setRoll_no(student.getRoll_no());
+        updateStudentRespDTO.setMessage("Student Record Updated Successfully");
+        updateStudentRespDTO.setUpdatedAt(student.getCreatedAt());
+
+        return updateStudentRespDTO;
+
 
     }
 }

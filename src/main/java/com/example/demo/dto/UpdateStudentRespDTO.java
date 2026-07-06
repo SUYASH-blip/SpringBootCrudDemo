@@ -2,7 +2,7 @@ package com.example.demo.dto;
 
 import java.time.LocalDateTime;
 
-public class createStudentRespDTO {
+public class UpdateStudentRespDTO {
     private String name;
     private int age;
     private String department;
@@ -11,22 +11,6 @@ public class createStudentRespDTO {
     private String message;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 
     public String getName() {
         return name;
@@ -74,5 +58,21 @@ public class createStudentRespDTO {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
