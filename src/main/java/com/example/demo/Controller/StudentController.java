@@ -33,8 +33,8 @@ public class StudentController {
     }
 
 
-    @GetMapping("/get")
-    public ResponseEntity<Student> getStudent(@RequestParam Long id) {
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
         Student studentResp = studentService.getStudent(id);
 
         if(studentResp == null) {

@@ -5,6 +5,7 @@ import com.example.demo.dto.CreateStudentRespDTO;
 import com.example.demo.dto.UpdateStudentReqDTO;
 import com.example.demo.dto.UpdateStudentRespDTO;
 import com.example.demo.entity.Student;
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repository.Studentrepository;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +37,13 @@ public class StudentService {
     }
 
     public Student getStudent(Long id) {
-        Optional<Student> studentResp = studentrepository.findByIdAndDeletedIsFalse(id);
 
-        return studentResp.orElse(null);
+        Student studentResp = studentrepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student with id " + id + "not Found"));
+
+        return mapToDto(studentResp);
+
 
     }
 
