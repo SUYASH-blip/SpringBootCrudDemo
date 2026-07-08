@@ -52,7 +52,7 @@ public class StudentService {
     }
 
 
-    public Student updatestudent(Long id, UpdateStudentReqDTO studentReq){
+    public UpdateStudentRespDTO updatestudent(Long id, UpdateStudentReqDTO studentReq){
         Optional<Student> existingstudent = studentrepository.findById(id);
 
         if(existingstudent.isEmpty()) return null;
@@ -66,9 +66,24 @@ public class StudentService {
 
         Student Finalstudent = studentrepository.save(studentTosave);
 
-        return Finalstudent;
+        return mapToUpdateDto(Finalstudent);
 
     }
+
+
+    public Boolean deleteStudentSoftly(Long id) {
+        Optional<Student> existingStudent =
+                studentrepository.findByIdAndDeletedIsFalse(id);
+
+        if (existingStudent.isEmpty()) return false;
+
+        Student studentToSave = existingStudent.get();
+        studentToSave.setDeleted(true);
+        studentrepository.save(studentToSave);
+
+        return true;
+    }
+
 
     private Student mapToEntity(CreateStudentReqDTO studentrequestdto){
         Student student = new Student();
