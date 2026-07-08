@@ -5,6 +5,7 @@ import com.example.demo.dto.CreateStudentRespDTO;
 import com.example.demo.dto.UpdateStudentReqDTO;
 import com.example.demo.dto.UpdateStudentRespDTO;
 import com.example.demo.entity.Student;
+import com.example.demo.exceptions.DuplicateResource;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repository.Studentrepository;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class StudentService {
 
 
         Student student = mapToEntity(studentreqDto);
+        if(emailExists(student)){
+            throw new DuplicateResource("Email id already Exists!");
+        }
         student.setCreatedAt(LocalDateTime.now());
         student.setUpdatedAt(LocalDateTime.now());
         Student studentfinal = studentrepository.save(student);
@@ -38,17 +42,16 @@ public class StudentService {
 
     public Student getStudent(Long id) {
 
-        Student studentResp = studentrepository
+        Student studentresp = studentrepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student with id " + id + "not Found"));
 
-        return mapToDto(studentResp);
+        return mapToDto(studentresp);
 
 
     }
 
     public List<CreateStudentRespDTO> getallStudents(){
-
         List<Student> studentList2 = studentrepository.findByDeletedIsFalse();
 
         return studentList2.stream()
@@ -58,20 +61,22 @@ public class StudentService {
 
 
     public UpdateStudentRespDTO updatestudent(Long id, UpdateStudentReqDTO studentReq){
-        Optional<Student> existingstudent = studentrepository.findById(id);
-
-        if(existingstudent.isEmpty()) return null;
-
-        Student studentTosave = existingstudent.get();
-        studentTosave.setName(studentReq.getName());
-        studentTosave.setAge(studentReq.getAge());
-        studentTosave.setDepartment(studentReq.getDepartment());
-        studentTosave.setRoll_no(studentReq.getRoll_no());
+        Student existingstudent = studentrepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student with id " + id + "not Found"));
 
 
-        Student Finalstudent = studentrepository.save(studentTosave);
 
-        return mapToUpdateDto(Finalstudent);
+        Student studentTosave = existingstudent;
+        existingstudent.setName(studentReq.getName());
+        existingstudent.setAge(studentReq.getAge());
+        existingstudent.setDepartment(studentReq.getDepartment());
+        existingstudent.setRoll_no(studentReq.getRoll_no());
+
+
+        Student savedStudent = studentrepository.save(existingstudent);
+
+        return mapToUpdateDto(savedStudent);
 
     }
 
@@ -126,5 +131,9 @@ public class StudentService {
         return updateStudentRespDTO;
 
 
+    }
+
+    public boolean emailExists(Student student){
+        return studentrepository.existsByEmail(student.getEmail());
     }
 }
