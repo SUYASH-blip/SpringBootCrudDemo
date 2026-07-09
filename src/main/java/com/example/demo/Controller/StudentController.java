@@ -33,15 +33,13 @@ public class StudentController {
     }
 
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
-        Student studentResp = studentService.getStudent(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<CreateStudentRespDTO> getStudent(@PathVariable Long id) {
+        CreateStudentRespDTO studentResp = studentService.getStudent(id);
 
-        if(studentResp == null) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(studentResp);
     }
+
 
     @GetMapping
     public ResponseEntity<List<CreateStudentRespDTO>> getallStudents(){
@@ -70,6 +68,15 @@ public class StudentController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteStudent(@RequestParam Long id) {
+        studentService.deleteStudent(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
 
     // read student
 

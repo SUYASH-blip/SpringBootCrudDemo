@@ -40,16 +40,15 @@ public class StudentService {
 
     }
 
-    public Student getStudent(Long id) {
-
-        Student studentresp = studentrepository
+    public CreateStudentRespDTO getStudent(Long id) {
+        Student studentResp = studentrepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student with id " + id + "not Found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Student with id " + id + " not found"));
 
-        return mapToDto(studentresp);
-
-
+        return mapToDto(studentResp);
     }
+
 
     public List<CreateStudentRespDTO> getallStudents(){
         List<Student> studentList2 = studentrepository.findByDeletedIsFalse();
@@ -80,19 +79,26 @@ public class StudentService {
 
     }
 
+    public void deleteStudent(Long id) {
+        Student studentToBeDeleted = studentrepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Student with id " + id + " not found"));
 
-    public Boolean deleteStudentSoftly(Long id) {
-        Optional<Student> existingStudent =
-                studentrepository.findByIdAndDeletedIsFalse(id);
-
-        if (existingStudent.isEmpty()) return false;
-
-        Student studentToSave = existingStudent.get();
-        studentToSave.setDeleted(true);
-        studentrepository.save(studentToSave);
-
-        return true;
+        studentrepository.delete(studentToBeDeleted);
     }
+
+    public void deleteStudentSoftly(Long id) {
+        Student studentToBeDeleted = studentrepository
+                .findByIdAndDeletedIsFalse(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Student with id " + id + " not found"));
+
+        studentToBeDeleted.setDeleted(true);
+        studentrepository.save(studentToBeDeleted);
+    }
+
+
 
 
     private Student mapToEntity(CreateStudentReqDTO studentrequestdto){
